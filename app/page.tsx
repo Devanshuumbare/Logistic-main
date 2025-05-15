@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -6,15 +7,34 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { BellIcon, SearchIcon, UserIcon } from "lucide-react"
 import { LoginModal } from "@/components/login-modal"
-import { CFSCard } from "@/components/cfs-card"
-import { ServiceCard } from "@/components/service-card"
+
 import { StatsCard } from "@/components/stats-card"
 import { FreightService } from "@/components/freight-service"
+import { CFSCard } from "@/components/cfs-card"
+import { CFSAreaDropdown } from "@/components/cfs-area-dropdown"
+import { CFSAreaList } from "@/components/cfs-area-list"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+
+interface CFSAreaListProps {
+  city: string
+  selectedArea?: string
+  onSelect?: (area: string) => void
+}
 
 export default function Home() {
   const [shipmentType, setShipmentType] = useState("standard")
   const [rateType, setRateType] = useState("regular")
+  const [selectedCFSArea, setSelectedCFSArea] = useState("")
+  const [showCFSAreas, setShowCFSAreas] = useState(false)
+  const [selectedCity, setSelectedCity] = useState("Mumbai")
+  const [selectedSingaporeCFSArea, setSelectedSingaporeCFSArea] = useState("")
+  const [showSingaporeCFSAreas, setShowSingaporeCFSAreas] = useState(false)
+
+  const handleCFSSelect = (cfsName: string) => {
+    setSelectedCFSArea(cfsName)
+    // Call the onSelect callback if provided
+    
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -388,17 +408,23 @@ export default function Home() {
               <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-5">
                 <div className="space-y-1 md:col-span-1">
                   <label className="text-xs text-gray-500">From</label>
-                  <div className="rounded-md border p-2">
-                    <div className="text-lg font-semibold">Mumbai</div>
-                    <div className="text-xs text-gray-500">MUM, Mumbai Port, India</div>
-                  </div>
+                  <CFSAreaDropdown
+                    city="Mumbai"
+                    onSelect={(area) => {
+                      setSelectedCFSArea(area);
+                      setShowCFSAreas(true);
+                    }}
+                  />
                 </div>
                 <div className="space-y-1 md:col-span-1">
                   <label className="text-xs text-gray-500">To</label>
-                  <div className="rounded-md border p-2">
-                    <div className="text-lg font-semibold">Singapore</div>
-                    <div className="text-xs text-gray-500">SIN, Singapore Port, Singapore</div>
-                  </div>
+                  <CFSAreaDropdown
+                    city="Singapore"
+                    onSelect={(area) => {
+                      setSelectedSingaporeCFSArea(area);
+                      setShowSingaporeCFSAreas(true);
+                    }}
+                  />
                 </div>
                 <div className="space-y-1 md:col-span-1">
                   <label className="text-xs text-gray-500">Departure</label>
@@ -484,6 +510,28 @@ export default function Home() {
               </div>
             </div>
 
+            {showCFSAreas && (
+              <CFSAreaList
+                city="Mumbai"
+                selectedArea={selectedCFSArea}
+                onSelect={(area) => {
+                  setSelectedCFSArea(area);
+                  setShowCFSAreas(false);
+                }}
+              />
+            )}
+
+            {showSingaporeCFSAreas && (
+              <CFSAreaList
+                city="Singapore"
+                selectedArea={selectedSingaporeCFSArea}
+                onSelect={(area) => {
+                  setSelectedSingaporeCFSArea(area);
+                  setShowSingaporeCFSAreas(false);
+                }}
+              />
+            )}
+
             <div className="mt-6 flex items-center justify-center pb-6">
               <button className="flex items-center gap-1 rounded-full bg-green-800 px-4 py-2 text-sm text-white">
                 <span>Explore More</span>
@@ -502,6 +550,73 @@ export default function Home() {
                   <path d="m6 9 6 6 6-6" />
                 </svg>
               </button>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-gradient-to-r from-green-50 to-green-100">
+          <div className="container">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="inline-block text-sm font-medium text-green-600 mb-2">• OUR VISION</div>
+                <h2 className="text-3xl font-bold tracking-tight md:text-4xl mb-6">Pioneering Sustainable Global Logistics</h2>
+                <p className="text-gray-700 mb-6 text-lg">
+                  At Green Ocean Logistics, we envision a world where global trade flows seamlessly while respecting our planet.
+                  Our mission is to revolutionize the logistics industry by providing innovative, efficient, and environmentally
+                  responsible solutions that connect businesses across continents.
+                </p>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">Sustainability First</h3>
+                      <p className="text-gray-600">We're committed to reducing carbon emissions through optimized routes and green technologies.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">Efficiency & Reliability</h3>
+                      <p className="text-gray-600">Our advanced tracking systems and dedicated team ensure on-time delivery, every time.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">Global Partnership Network</h3>
+                      <p className="text-gray-600">We've built strong relationships with partners worldwide to offer seamless service across borders.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="relative">
+                <div className="absolute -top-6 -left-6 w-24 h-24 bg-green-200 rounded-full opacity-50"></div>
+                <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-green-200 rounded-full opacity-50"></div>
+                <div className="relative z-10 rounded-lg overflow-hidden shadow-xl">
+                  <img
+                    src="/placeholder.svg?height=500&width=600"
+                    alt="Green Ocean Logistics Vision"
+                    className="w-full h-auto"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -551,54 +666,151 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-12 md:py-24">
+        <section className="py-12 md:py-16">
           <div className="container">
-            <div className="flex flex-col items-center justify-center text-center">
-              <div className="space-y-2">
-                <div className="flex items-center justify-center gap-1 text-sm font-medium uppercase text-gray-500">
-                  <span>•</span>
-                  <span>ABOUT US</span>
-                </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Who We Are</h2>
-                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl">
-                  Our logistics company is dedicated to enabling the easy global transit across the world for global
-                  networks. Equipped with experienced professionals, streamlined fleets and secure transportation of
-                  your goods, regardless of the destination.
-                </p>
-              </div>
+            <div className="text-center mb-10">
+              <div className="inline-block text-sm font-medium text-green-600 mb-2">• PACKAGES</div>
+              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Our Packages</h2>
+              <p className="mt-4 max-w-2xl mx-auto text-gray-500">
+                Our CFS facilities offer comprehensive services for container handling, storage, and distribution.
+                We provide efficient stuffing, de-stuffing, and secure storage solutions at strategic port locations worldwide.
+              </p>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <CFSCard
+                title="Mumbai CFS"
+                description="Located at Mumbai Port, offering container stuffing, de-stuffing, and storage services."
+                image="/placeholder.svg?height=200&width=300"
+              />
+              <CFSCard
+                title="Chennai CFS"
+                description="Strategically located near Chennai Port with excellent connectivity to major highways."
+                image="/placeholder.svg?height=200&width=300"
+              />
+              <CFSCard
+                title="Dubai CFS"
+                description="State-of-the-art facility at Jebel Ali Port with advanced security and handling equipment."
+                image="/placeholder.svg?height=200&width=300"
+              />
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <CFSCard
+                title="Singapore CFS"
+                description="Modern facility with temperature-controlled storage and customs clearance services."
+                image="/placeholder.svg?height=200&width=300"
+              />
+              <CFSCard
+                title="Rotterdam CFS"
+                description="Europe's largest CFS facility with specialized handling for hazardous goods."
+                image="/placeholder.svg?height=200&width=300"
+              />
+              <CFSCard
+                title="Los Angeles CFS"
+                description="Strategically located near the Port of LA with direct highway access and rail connectivity."
+                image="/placeholder.svg?height=200&width=300"
+              />
+            </div>
+
+
           </div>
         </section>
-
-        <section className="py-12 md:py-24">
+        <section className="py-8 md:py-12">
           <div className="container">
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-8">
-                <ServiceCard
-                  title="Security"
-                  description="Our logistics company is dedicated to enabling the easy global transit across the world for global networks."
-                />
-                <ServiceCard
-                  title="Reliability"
-                  description="Our logistics company is dedicated to enabling the easy global transit across the world for global networks."
-                />
-                <ServiceCard
-                  title="Eco-Friendly"
-                  description="Our logistics company is dedicated to enabling the easy global transit across the world for global networks."
-                />
-                <ServiceCard
-                  title="Expertise"
-                  description="Our logistics company is dedicated to enabling the easy global transit across the world for global networks."
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="group flex items-start gap-4 rounded-lg border p-4 transition-all hover:border-green-600 hover:bg-green-50">
+                  <div className="flex-shrink-0 h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
+                      <rect x="2" y="6" width="20" height="12" rx="2" />
+                      <path d="M12 12h.01" />
+                      <path d="M17 12h.01" />
+                      <path d="M7 12h.01" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">Container Stuffing</h3>
+                    <p className="text-gray-600">Professional loading of goods into containers with optimal space utilization and secure packing techniques.</p>
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <a href="#" className="text-green-600 font-medium text-sm flex items-center">
+                        Learn more
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                          <path d="M5 12h14"></path>
+                          <path d="m12 5 7 7-7 7"></path>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="group flex items-start gap-4 rounded-lg border p-4 transition-all hover:border-green-600 hover:bg-green-50">
+                  <div className="flex-shrink-0 h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
+                      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">Container De-stuffing</h3>
+                    <p className="text-gray-600">Efficient unloading of containers with careful handling and sorting of goods for further distribution or storage.</p>
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <a href="#" className="text-green-600 font-medium text-sm flex items-center">
+                        Learn more
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                          <path d="M5 12h14"></path>
+                          <path d="m12 5 7 7-7 7"></path>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="relative hidden md:block">
-                <img
-                  src="/placeholder.svg?height=500&width=500"
-                  alt="Logistics Service"
-                  className="rounded-lg object-cover"
-                  width={500}
-                  height={500}
-                />
+
+              <div className="space-y-4">
+                <div className="group flex items-start gap-4 rounded-lg border p-4 transition-all hover:border-green-600 hover:bg-green-50">
+                  <div className="flex-shrink-0 h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
+                      <rect width="16" height="16" x="4" y="4" rx="2" />
+                      <path d="M4 12h16" />
+                      <path d="M12 4v16" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">Storage Solutions</h3>
+                    <p className="text-gray-600">Secure, climate-controlled storage facilities for short and long-term cargo storage with 24/7 monitoring and security.</p>
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <a href="#" className="text-green-600 font-medium text-sm flex items-center">
+                        Learn more
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                          <path d="M5 12h14"></path>
+                          <path d="m12 5 7 7-7 7"></path>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="group flex items-start gap-4 rounded-lg border p-4 transition-all hover:border-green-600 hover:bg-green-50">
+                  <div className="flex-shrink-0 h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">Customs Clearance</h3>
+                    <p className="text-gray-600">Streamlined customs documentation and clearance services to ensure smooth import and export processes with minimal delays.</p>
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <a href="#" className="text-green-600 font-medium text-sm flex items-center">
+                        Learn more
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                          <path d="M5 12h14"></path>
+                          <path d="m12 5 7 7-7 7"></path>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -732,58 +944,6 @@ export default function Home() {
                     <path d="M18 22l-2-3" />
                   </svg>
                 }
-              />
-            </div>
-          </div>
-        </section>
-
-        <section className="py-12 md:py-24">
-          <div className="container">
-            <div className="flex flex-col items-center justify-center text-center">
-              <div className="space-y-2">
-                <div className="flex items-center justify-center gap-1 text-sm font-medium uppercase text-gray-500">
-                  <span>•</span>
-                  <span>CFS SERVICES</span>
-                </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                  Container Freight Stations
-                </h2>
-                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl">
-                  Our CFS facilities offer comprehensive services for container handling, storage, and distribution.
-                  Book your CFS service today.
-                </p>
-              </div>
-            </div>
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
-              <CFSCard
-                title="Mumbai CFS"
-                description="Located at Mumbai Port, offering container stuffing, de-stuffing, and storage services."
-                image="/placeholder.svg?height=200&width=300"
-              />
-              <CFSCard
-                title="Chennai CFS"
-                description="Strategically located near Chennai Port with excellent connectivity to major highways."
-                image="/placeholder.svg?height=200&width=300"
-              />
-              <CFSCard
-                title="Dubai CFS"
-                description="State-of-the-art facility at Jebel Ali Port with advanced security and handling equipment."
-                image="/placeholder.svg?height=200&width=300"
-              />
-              <CFSCard
-                title="Singapore CFS"
-                description="Modern facility with temperature-controlled storage and customs clearance services."
-                image="/placeholder.svg?height=200&width=300"
-              />
-              <CFSCard
-                title="Rotterdam CFS"
-                description="Europe's largest CFS facility with specialized handling for hazardous goods."
-                image="/placeholder.svg?height=200&width=300"
-              />
-              <CFSCard
-                title="Los Angeles CFS"
-                description="Strategically located near the Port of LA with direct highway access and rail connectivity."
-                image="/placeholder.svg?height=200&width=300"
               />
             </div>
           </div>
@@ -993,3 +1153,11 @@ export default function Home() {
     </div>
   )
 }
+
+
+
+
+
+
+
+
